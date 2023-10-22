@@ -2,19 +2,13 @@ from time import sleep
 
 import pandas as pd
 from nba_api.stats.endpoints import ShotChartDetail
-from prefect import flow, task
-from prefect.tasks import task_input_hash
 
 from datalake_nba.etl_utils import generate_hash_id
 from datalake_nba.db_utils import insert_from_pandas
+from datalake_nba.general_utils import retry
 
 
-@task(
-    retries=10,
-    retry_delay_seconds=60,
-    retry_jitter_factor=1,
-    cache_key_fn=task_input_hash,
-)
+@retry(retries=10, delay=60, jitter=10)
 def get_shot_chart_detail(
     season_year: str, team_id: str, player_id: str
 ) -> pd.DataFrame:
@@ -28,7 +22,6 @@ def get_shot_chart_detail(
     return shot_chart
 
 
-@task(cache_key_fn=task_input_hash)
 def create_hash_id_shot_chart_detail(shot_chart: pd.DataFrame) -> pd.DataFrame:
     keys = ["GAME_ID", "TEAM_ID", "PLAYER_ID", "GAME_EVENT_ID"]
     shot_chart["HASH_ID_ACTION"] = generate_hash_id(df=shot_chart, keys=keys)
@@ -40,7 +33,6 @@ def create_hash_id_shot_chart_detail(shot_chart: pd.DataFrame) -> pd.DataFrame:
     return shot_chart.loc[:, reordered_cols]
 
 
-@task(cache_key_fn=task_input_hash)
 def process_types_shot_chart_detail(shot_chart: pd.DataFrame) -> pd.DataFrame:
     for key in ["GAME_ID", "TEAM_ID", "PLAYER_ID"]:
         if key in shot_chart.columns:
@@ -48,7 +40,6 @@ def process_types_shot_chart_detail(shot_chart: pd.DataFrame) -> pd.DataFrame:
     return shot_chart
 
 
-@flow
 def insert_shot_chart_detail(
     season_year: str, team_id: str, player_id: str, sleep_secs=0.5
 ) -> None:

@@ -1,12 +1,12 @@
 import pandas as pd
 from nba_api.stats.endpoints import TeamGameLogs
-from prefect import flow, task
 
 from datalake_nba.etl_utils import generate_hash_id
 from datalake_nba.db_utils import insert_from_pandas
+from datalake_nba.general_utils import retry
 
 
-@task(retries=10, retry_delay_seconds=60, retry_jitter_factor=1)
+@retry(retries=10, delay=60, jitter=10)
 def get_team_game_logs(season_nullable: str, season_type_nullable: str) -> pd.DataFrame:
     team_game_logs = TeamGameLogs(
         season_nullable=season_nullable, season_type_nullable=season_type_nullable
@@ -15,7 +15,6 @@ def get_team_game_logs(season_nullable: str, season_type_nullable: str) -> pd.Da
     return team_game_logs
 
 
-@task()
 def pre_process_team_game_logs(team_game_logs: pd.DataFrame) -> pd.DataFrame:
     team_game_logs["GAME_DATE"] = pd.to_datetime(team_game_logs["GAME_DATE"]).apply(
         lambda x: x.strftime("%Y-%m-%d")
@@ -62,7 +61,6 @@ def pre_process_team_game_logs(team_game_logs: pd.DataFrame) -> pd.DataFrame:
     ]
 
 
-@flow
 def insert_team_game_logs(season_year: str, season_type: str) -> None:
     # get data
     team_game_logs = get_team_game_logs(

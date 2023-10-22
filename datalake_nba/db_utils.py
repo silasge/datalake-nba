@@ -3,12 +3,10 @@ from typing import List, Tuple
 
 import duckdb
 import pandas as pd
-from prefect import task
 
 from datalake_nba.config import DUCKDB_PATH
 
 
-@task
 def create_from_sql_file(sql_file: str | Path) -> None:
     conn = duckdb.connect(DUCKDB_PATH)
     # reading file
@@ -20,7 +18,6 @@ def create_from_sql_file(sql_file: str | Path) -> None:
     conn.close()
 
 
-@task
 def insert_from_pandas(schema: str, table: str, df: pd.DataFrame) -> None:
     conn = duckdb.connect(DUCKDB_PATH)
 
@@ -38,7 +35,6 @@ def insert_from_pandas(schema: str, table: str, df: pd.DataFrame) -> None:
     conn.close()
 
 
-@task
 def get_distinct_game_ids(
     tables: List[str], season_year: str, season_type: str
 ) -> List[str]:
@@ -78,7 +74,6 @@ def get_distinct_game_ids(
     return list(set(distinct_game_ids))
 
 
-@task
 def get_distinct_season_team_player_id(
     season_year: str, season_type: str
 ) -> List[Tuple]:

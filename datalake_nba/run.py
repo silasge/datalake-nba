@@ -1,7 +1,6 @@
 import argparse
 import sys
 
-from prefect import flow
 from tqdm import tqdm
 
 from datalake_nba.nba_bronze import (
@@ -31,7 +30,6 @@ def parse_args(args):
     return parser.parse_args(args)
 
 
-@flow
 def run_nba_bronze():
     args = parse_args(sys.argv[1:])
     # create schemas
