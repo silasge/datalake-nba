@@ -1,9 +1,9 @@
 import pandas as pd
 from nba_api.stats.endpoints import TeamGameLogs
 
-from datalake_nba.etl_utils import generate_hash_id
-from datalake_nba.db_utils import insert_from_pandas
-from datalake_nba.general_utils import retry
+from datalake_nba.utils.etl import generate_hash_id
+from datalake_nba.utils.db import insert_from_pandas
+from datalake_nba.utils.decorators import retry
 
 
 @retry(retries=10, delay=60, jitter=10)

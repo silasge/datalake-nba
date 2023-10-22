@@ -9,7 +9,7 @@ from datalake_nba.nba_bronze import (
     insert_playbyplay,
     insert_shot_chart_detail,
 )
-from datalake_nba.db_utils import (
+from datalake_nba.utils.db import (
     create_from_sql_file,
     get_distinct_game_ids,
     get_distinct_season_team_player_id,
