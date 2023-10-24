@@ -10,10 +10,11 @@ from datalake_nba.utils.decorators import retry
 
 @retry(retries=10, delay=60, jitter=10)
 def get_shot_chart_detail(
-    season_year: str, team_id: str, player_id: str
+    season_year: str, season_type: str, team_id: str, player_id: str
 ) -> pd.DataFrame:
     shot_chart = ShotChartDetail(
         season_nullable=season_year,
+        season_type_all_star=season_type,
         team_id=team_id,
         player_id=player_id,
         context_measure_simple="FGA",
@@ -41,11 +42,14 @@ def process_types_shot_chart_detail(shot_chart: pd.DataFrame) -> pd.DataFrame:
 
 
 def insert_shot_chart_detail(
-    season_year: str, team_id: str, player_id: str, sleep_secs=0.5
+    season_year: str, season_type: str, team_id: str, player_id: str, sleep_secs=0.5
 ) -> None:
     try:
         shot_chart = get_shot_chart_detail(
-            season_year=season_year, team_id=team_id, player_id=player_id
+            season_year=season_year,
+            season_type=season_type,
+            team_id=team_id,
+            player_id=player_id,
         )
     except Exception as e:
         print(e)

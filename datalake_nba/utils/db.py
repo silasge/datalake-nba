@@ -82,6 +82,7 @@ def get_distinct_season_team_player_id(
     query = f"""
 	SELECT DISTINCT
 	    b.SEASON_YEAR,
+        b.SEASON_TYPE,
 	    a.TEAM_ID,
 	    a.PLAYER_ID
 	FROM

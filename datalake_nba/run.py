@@ -68,6 +68,8 @@ def run_nba_bronze():
             season_year=args.sy, season_type=args.st
         )
 
-        for sy, tid, pid in (pbar := tqdm(season_team_player_id)):
-            pbar.set_description(f"Processing {sy}-{tid}-{pid}")
-            insert_shot_chart_detail(season_year=sy, team_id=tid, player_id=pid)
+        for sy, st, tid, pid in (pbar := tqdm(season_team_player_id)):
+            pbar.set_description(f"Processing {sy}-{st}-{tid}-{pid}")
+            insert_shot_chart_detail(
+                season_year=sy, season_type=st, team_id=tid, player_id=pid
+            )
