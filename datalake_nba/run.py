@@ -3,22 +3,22 @@ import sys
 
 from tqdm import tqdm
 
+from datalake_nba.config import (
+    BRONZE_TABLES_PATH,
+    GOLD_TABLES_PATH,  # noqa: F401
+    SCHEMAS_PATH,
+    SILVER_TABLES_PATH,  # noqa: F401
+)
 from datalake_nba.nba_bronze import (
-    insert_team_game_logs,
     insert_box_scores,
     insert_playbyplay,
     insert_shot_chart_detail,
+    insert_team_game_logs,
 )
 from datalake_nba.utils.db import (
     create_from_sql_file,
     get_distinct_game_ids,
     get_distinct_season_team_player_id,
-)
-from datalake_nba.config import (
-    SCHEMAS_PATH,
-    BRONZE_TABLES_PATH,
-    SILVER_TABLES_PATH,
-    GOLD_TABLES_PATH,
 )
 
 

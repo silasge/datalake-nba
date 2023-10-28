@@ -23,21 +23,10 @@ pre-commit = "^3.5.0"
 [tool.poetry.scripts]
 get_nba_bronze = "datalake_nba.run:run_nba_bronze"
 
-[tool.black]
-line-lenght = 79
-include = '\.piy?$'
-exclude = '''
-/(
-  \.git
- | \.hg
- | \.mypy_cache
- | \.tox
- | \.venv
- | _build
- | buck-out
- | build
- )/
-'''
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+
+
 
 [build-system]
 requires = ["poetry-core"]
