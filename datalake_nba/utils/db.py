@@ -92,7 +92,8 @@ def get_distinct_season_team_player_id(
 	    ON a.GAME_ID = b.GAME_ID
 	WHERE
 	    b.SEASON_YEAR = '{season_year}'
-	    AND b.SEASON_TYPE = '{season_type}';
+	    AND b.SEASON_TYPE = '{season_type}'
+        AND a.FGA > 0;
     """
 
     results = conn.execute(query).fetchall()
