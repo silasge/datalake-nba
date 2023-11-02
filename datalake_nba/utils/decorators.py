@@ -11,7 +11,7 @@ def retry(
     jitter: Optional[int] = None,
 ):
     if func is None:
-        return partial(retry, retries=retries, delay=delay, jitter=jitter)
+        return partial(retry, retries=retries, delay=delay)
 
     @wraps(func)
     def decorator(*args, **kwargs):

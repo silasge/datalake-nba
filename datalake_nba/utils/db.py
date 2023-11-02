@@ -80,39 +80,19 @@ def get_distinct_season_team_player_id(
     conn = duckdb.connect(DUCKDB_PATH)
 
     query = f"""
-    WITH
-    distincts_gtpid_shot AS (
-    	SELECT DISTINCT 
-    		GAME_ID,
-    		TEAM_ID,
-    		PLAYER_ID
-    	FROM 
-    		nba_bronze.shotchartdetail 
-    ),
-    distincts_gtpid AS (
-    	SELECT DISTINCT
-    	    b.SEASON_YEAR,
-    	    b.SEASON_TYPE,
-    	    a.GAME_ID,
-    	    a.TEAM_ID,
-    	    a.PLAYER_ID
-    	FROM
-    	    nba_bronze.players_box_score_traditional AS a
-    	INNER JOIN
-    	    nba_bronze.team_game_logs AS b
-    	    ON a.GAME_ID = b.GAME_ID
-    	ANTI JOIN 
-    		distincts_gtpid_shot AS c
-    		ON a.GAME_ID = c.GAME_ID 
-    		AND a.TEAM_ID = c.TEAM_ID 
-    		AND a.PLAYER_ID = c.PLAYER_ID
-    	WHERE
-    	    b.SEASON_YEAR = '{season_year}'
-    	    AND b.SEASON_TYPE = '{season_type}'
-    	    AND a.FGA > 0
-    )
-    SELECT *
-    FROM distincts_gtpid
+	SELECT DISTINCT
+	    b.SEASON_YEAR,
+        b.SEASON_TYPE,
+	    a.TEAM_ID,
+	    a.PLAYER_ID
+	FROM
+	    nba_bronze.players_box_score_traditional AS a
+	INNER JOIN
+	    nba_bronze.team_game_logs AS b
+	    ON a.GAME_ID = b.GAME_ID
+	WHERE
+	    b.SEASON_YEAR = '{season_year}'
+	    AND b.SEASON_TYPE = '{season_type}';
     """
 
     results = conn.execute(query).fetchall()
